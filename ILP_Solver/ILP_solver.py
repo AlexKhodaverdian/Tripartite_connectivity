@@ -109,14 +109,10 @@ def generate_anat_model(graph, TFs_list, Regions_list, Properties_list, alpha, b
         for u in unique_TFs:
                 model.addConstr(quicksum(node_variables_TF[x] for x in TFs_list if u in x) <= max_duplicate_tfs)
 
-	print "Total Number of Unique TFs", len(unique_TFs)
 	# At most TF appears once
 	for u in forced_nodes_full:
 		if len([node_variables_TF[x] for x in TFs_list if u in x]) == 0:
 			continue
-		print len([node_variables_TF[x] for x in TFs_list if u in x])
-		print [node_variables_TF[x] for x in TFs_list if u in x]
-		print quicksum(node_variables_TF[x] for x in TFs_list if u in x)
 		model.addConstr(quicksum(node_variables_TF[x] for x in TFs_list if u in x) >= 1)
 
 	for u in TFs_list:
@@ -158,7 +154,7 @@ def generate_anat_model(graph, TFs_list, Regions_list, Properties_list, alpha, b
 	for node in Properties_list:
 		Regions_neighbors = list(set(graph.neighbors(node)) & set(Regions_list))
 		model.addConstr(
-			quicksum(node_variables_Region[u] for u in Regions_neighbors) >= min(len(Regions_neighbors), gamma+1)
+			quicksum(node_variables_Region[u] for u in Regions_neighbors) >= min(len(Regions_neighbors), gamma)
 		)
 
 	# OBJECTIVE
@@ -183,7 +179,7 @@ def retreive_and_print_nodes(model, node_variables_TF, node_variables_Region):
 	:return: Two dictionaries, corresponding to transcription factors and regions, with 0 or 1 values for respective entries, indicating
 			 whether the corresponding
 	"""
-	
+
 	node_variables_TF_result, node_variables_Region_result = {},{}
 	if model.status == GRB.status.OPTIMAL or model.status == GRB.status.TIME_LIMIT:
 		node_variables_TF_result = model.getAttr('x', node_variables_TF)

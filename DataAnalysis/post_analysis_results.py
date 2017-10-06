@@ -76,19 +76,19 @@ for TF in TFs_used:
 	avg_deg_TFs_chosen.append(len(set(network.neighbors(TF)) & set(Regions_list)))
 
 
-with open('TF_detailed_results.csv', 'w') as fp:
+with open('Results/TF_detailed_results.csv', 'w') as fp:
 	a = csv.writer(fp, delimiter=',')	
 	a.writerows(TFs)
 
-with open('Regions_detailed_results.csv', 'w') as fp:
+with open('Results/Regions_detailed_results.csv', 'w') as fp:
 	a = csv.writer(fp, delimiter=',')	
 	a.writerows(Regions)
 
-with open('Properties_detailed_results.csv', 'w') as fp:
+with open('Results/Properties_detailed_results.csv', 'w') as fp:
 	a = csv.writer(fp, delimiter=',')	
 	a.writerows(Properties)
 
-with open("Meta_stats.txt", "w") as fp:
+with open("Results/Meta_stats.txt", "w") as fp:
 	fp.write("Total Cost: " + str(total + len(Regions_used)))
 	fp.write("\n")
 

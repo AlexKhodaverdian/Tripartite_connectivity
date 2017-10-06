@@ -3,10 +3,17 @@ from generate_network import generate_network
 #sys.path.append("..")
 from ILP_Solver.ILP_solver import *
 
-beta = 5
-gamma = 10
+
 
 network, TFs_list, Regions_list, Properties_list = generate_network()
+
+
+beta = 5
+gamma = 10
+theta = 20
+tau = 3
+alpha = .5
+max_duplicate_tfs = 2
 forced_nodes_full = ['POU3F1',
 'POU3F2',
 'SOX2',
@@ -41,17 +48,11 @@ forced_nodes_full = ['POU3F1',
 'ZIC3',
 'ZIC4',
 'ZIC5']
-lst = []
-"""
-for node in Properties_list:
-	if len(set(network.neighbors(node)) & set(Regions_list)) < 10:
-		network.remove(node)
-print sorted(lst)
-"""
-model, node_variables_TF, node_variables_Region = generate_anat_model(network, TFs_list, Regions_list, Properties_list, alpha, gamma, forced_nodes_full)
-node_variables_TF_result, node_variables_Region_result = solve_anat_instance(model, network, node_variables_TF, node_variables_Region, forced_nodes_full)
 
-file = open("TFs_used.txt","w") 
+model, node_variables_TF, node_variables_Region = generate_anat_model(network, TFs_list, Regions_list, Properties_list, alpha, beta, gamma, theta, tau, max_duplicate_tfs, forced_nodes_full)
+node_variables_TF_result, node_variables_Region_result = solve_anat_instance(model, network, node_variables_TF, node_variables_Region,time_limit=300)
+
+file = open("Results/TFs_used.txt","w")
 
 for node, value in node_variables_TF_result.items():
 	if value == 1:
@@ -59,7 +60,7 @@ for node, value in node_variables_TF_result.items():
 		file.write('\n')
 file.close()
 
-file = open("Regions_used.txt","w") 
+file = open("Results/Regions_used.txt","w")
 
 for node, value in node_variables_Region_result.items():
 	if value == 1:
@@ -67,21 +68,3 @@ for node, value in node_variables_Region_result.items():
 		file.write('\n')
 file.close()
 
-"""
-file = open("TFs_used.txt","w") 
-
-for node, value in node_variables_TF_result.items():
-	if value > 0:
-		file.write(node + "  " + str(value))
-		file.write('\n')
-file.close()
-
-file = open("Regions_used.txt","w") 
-
-for node, value in node_variables_Region_result.items():
-	if value > 0:
-		file.write(node + "  " + str(value))
-		file.write('\n')
-file.close()
-
-"""

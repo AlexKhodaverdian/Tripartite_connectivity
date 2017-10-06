@@ -19,7 +19,7 @@ plt.scatter(deg_TF_Properties, deg_TF_Regions)
 plt.title("Degree Pair Plot for TFs")
 plt.xlabel("Number of Property Neighbors")
 plt.ylabel("Number of Region Neighbors")
-plt.savefig("TFs_PairPlot_All_Data.png")
+plt.savefig("Results/Plots/TFs_PairPlot_All_Data.png")
 plt.clf()
 
 deg_Properties_TF = []
@@ -33,7 +33,7 @@ plt.scatter(deg_Properties_TF, deg_Properties_Regions)
 plt.title("Degree Pair Plot for Properties")
 plt.xlabel("Number of TF Neighbors")
 plt.ylabel("Number of Region Neighbors")
-plt.savefig("Properties_PairPlot_All_Data.png")
+plt.savefig("Results/Plots/Properties_PairPlot_All_Data.png")
 plt.clf()
 
 deg_Region_TF = []
@@ -47,14 +47,14 @@ plt.scatter(deg_Region_TF, deg_Region_Property)
 plt.title("Degree Pair Plot for Regions")
 plt.xlabel("Number of TF Neighbors")
 plt.ylabel("Number of Property Neighbors")
-plt.savefig("Region_PairPlot_All_Data.png")
+plt.savefig("Results/Plots/Region_PairPlot_All_Data.png")
 plt.clf()
 
 used_TFs = []
 used_Regions = []
-for line in open("TFs_used.txt"):
+for line in open("Results/TFs_used.txt"):
 	used_TFs.append(line.strip())
-for line in open("Regions_used.txt"):
+for line in open("Results/Regions_used.txt"):
 	used_Regions.append(line.strip())
 
 deg_TF_Properties2 = []
@@ -68,7 +68,7 @@ plt.scatter(deg_TF_Properties2, deg_TF_Regions2)
 plt.title("Degree Pair Plot for TFs Used In Solution")
 plt.xlabel("Number of Property Neighbors")
 plt.ylabel("Number of Region Neighbors Used In Solution")
-plt.savefig("TFs_PairPlot_Used_TFs_Vs_Used_Regions.png")
+plt.savefig("Results/Plots/TFs_PairPlot_Used_TFs_Vs_Used_Regions.png")
 plt.clf()
 
 deg_Region_TF2 = []
@@ -82,7 +82,7 @@ plt.scatter(deg_Region_TF2, deg_Region_Property2)
 plt.title("Degree Pair Plot for Regions Used In Solution")
 plt.xlabel("Number of TF Neighbors Used In Solution")
 plt.ylabel("Number of Property Neighbors")
-plt.savefig("Region_PairPlot_Used_Regions_Vs_Used_TFs.png")
+plt.savefig("Results/Plots/Region_PairPlot_Used_Regions_Vs_Used_TFs.png")
 plt.clf()
 
 
@@ -97,7 +97,7 @@ plt.scatter(deg_TF_Properties3, deg_TF_Regions3)
 plt.title("Degree Pair Plot for TFs Used In Solution")
 plt.xlabel("Number of Property Neighbors")
 plt.ylabel("Number of Region Neighbors")
-plt.savefig("TFs_PairPlot_Used_TFs_Vs_All_Regions.png")
+plt.savefig("Results/Plots/TFs_PairPlot_Used_TFs_Vs_All_Regions.png")
 plt.clf()
 
 deg_Region_TF3 = []
@@ -111,7 +111,7 @@ plt.scatter(deg_Region_TF3, deg_Region_Property3)
 plt.title("Degree Pair Plot for Regions Used In Solution")
 plt.xlabel("Number of TF Neighbors")
 plt.ylabel("Number of Property Neighbors")
-plt.savefig("Region_PairPlot_Used_Regions_Vs_All_TFs.png")
+plt.savefig("Results/Plots/Region_PairPlot_Used_Regions_Vs_All_TFs.png")
 plt.clf()
 
 
@@ -121,7 +121,7 @@ plt.title("Degree Pair Plot for TFs")
 plt.xlabel("Number of Property Neighbors")
 plt.ylabel("Number of Region Neighbors")
 plt.legend()
-plt.savefig("TFs_PairPlot_Mixed.png")
+plt.savefig("Results/Plots/TFs_PairPlot_Mixed.png")
 plt.clf()
 
 
@@ -130,6 +130,6 @@ plt.scatter(deg_Region_TF3, deg_Region_Property3,c='r', label="Regions Used In S
 plt.title("Degree Pair Plot for Regions Used")
 plt.xlabel("Number of TF Neighbors")
 plt.ylabel("Number of Property Neighbors")
-plt.savefig("Region_PairPlot_Mixed.png")
+plt.savefig("Results/Plots/Region_PairPlot_Mixed.png")
 plt.legend()
 plt.clf()
