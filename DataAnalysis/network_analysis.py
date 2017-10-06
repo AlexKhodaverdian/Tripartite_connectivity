@@ -3,8 +3,9 @@ from generate_network import generate_network
 #sys.path.append("..")
 from ILP_Solver.ILP_solver import *
 
-alpha = 4
-gamma = 9
+beta = 5
+gamma = 10
+
 network, TFs_list, Regions_list, Properties_list = generate_network()
 forced_nodes_full = ['POU3F1',
 'POU3F2',

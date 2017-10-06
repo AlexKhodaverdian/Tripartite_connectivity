@@ -179,9 +179,11 @@ def retreive_and_print_nodes(model, node_variables_TF, node_variables_Region):
 	:param node_variables_TF: a dictionary mapping original TFs to corresponding gurobi variables
 	:param node_variables_Region: a dictionary mapping original Regions to corresponding gurobi variables
 	:param detailed_output: flag which when True will print the edges in the optimal subgraph
+
+	:return: Two dictionaries, corresponding to transcription factors and regions, with 0 or 1 values for respective entries, indicating
+			 whether the corresponding
 	"""
-	# Recover minimal subgraph
-	subgraph = networkx.DiGraph()
+	
 	node_variables_TF_result, node_variables_Region_result = {},{}
 	if model.status == GRB.status.OPTIMAL or model.status == GRB.status.TIME_LIMIT:
 		node_variables_TF_result = model.getAttr('x', node_variables_TF)
