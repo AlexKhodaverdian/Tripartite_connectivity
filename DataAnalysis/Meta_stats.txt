@@ -1,0 +1,10 @@
+Total Cost: 1559
+Number of Edges Between TFs and Regions: 1354
+Number of Regions Used: 205
+Number of TFs Used: 71
+
+============= SUMMARY STATISTICS ================
+Mean TF Degree (wrt Regions) For All TFs: 85.2041800643
+Mean TF Degree (wrt Regions) For TFs Chosen: 139.211267606
+Median TF Degree (wrt Regions) For All TFs: 59.0
+Median TF Degree (wrt Regions) For TFs Chosen: 104.0
