@@ -4,6 +4,7 @@ import time as python_time
 from os import sys
 sys.path.append("..")
 from utils import execution_time, print_edges_in_graph
+from collections import defaultdict
 
 epsilon = 0.000000001
 
@@ -36,7 +37,7 @@ def solve_anat_instance(model, graph, node_variables_TF, node_variables_Region, 
 	model.optimize()
 
 	# Recover minimal subgraph
-	node_variables_TF_result, node_variables_Region_result = retreive_and_print_nodes(model, graph, node_variables_TF, node_variables_Region, detailed_output)
+	node_variables_TF_result, node_variables_Region_result = retreive_and_print_nodes(model, node_variables_TF, node_variables_Region)
 
 
 	end_time = python_time.time()
@@ -50,7 +51,7 @@ def solve_anat_instance(model, graph, node_variables_TF, node_variables_Region, 
 
 
 
-def generate_anat_model(graph, TFs_list, Regions_list, Properties_list, alpha, beta, gamma, theta, tau, max_duplicate_tfs = 2, forced_nodes_full = []):
+def generate_anat_model(graph, TFs_list, Regions_list, Properties_list, beta, gamma, theta, tau, max_duplicate_tfs = 2, max_percentage_penalized_edges = .2, minimum_percentage_appearance = .4, forced_nodes_full = [], special_genes = [], extra_penalized_edges = [], ):
 	"""
 	Generate Gurobi model to solve tripartite-connectivity problem.
 
@@ -58,12 +59,13 @@ def generate_anat_model(graph, TFs_list, Regions_list, Properties_list, alpha, b
 	:param TFs_list: List of all transcription factors
 	:param Regions_list: List of all regions
 	:param Properties_list: List of all properties
-	:param alpha: Alpha constraint in objective function. Should be between 0 and 1. (Higher Alpha corresponds to more preference to high degree TFs)
 	:param beta: Number of TFs a property must be connected with
 	:param gamma: Number of Regions a property must be connected with
 	:param theta: Number of TFs each Region must be connected to
 	:param tau: Number of Regions each TF must be connected to
 	:param max_duplicate_tfs: Maximum Number of duplicates of same TF allowed in solution
+	:param max_percentage_penalized_edges: Max percentage of penalized edges to allow in the solution
+	:param minimum_percentage_appearance: Min percentage of forced regions
 	:param forced_nodes_full: TFs to force to be used in the solution
 
 	:return: a Gurobi model pertaining to the Tripartite-connectivity instance, mappings from TFs to TF gurobi variables,
@@ -75,6 +77,7 @@ def generate_anat_model(graph, TFs_list, Regions_list, Properties_list, alpha, b
 
 	# Create empty optimization model
 	model = Model('anat')
+
 
 
 	# Create variables d_{uv}
@@ -98,6 +101,21 @@ def generate_anat_model(graph, TFs_list, Regions_list, Properties_list, alpha, b
 
 	model.update()
 
+	#Constrained vs unconstrained edges(Ex: max constrained edges 20%)
+	model.addConstr(quicksum(edges_variables[u,v] for u,v in edges_variables) >= max_percentage_penalized_edges * quicksum(edges_variables[u,v] for u,v in set(extra_penalized_edges) & set(edges_variables.keys())))
+
+	# Constraint on number of touched regions
+	for i in range(1, 5):
+		s = set()
+		for region in Regions_list:
+			ss = set()
+			for gene in set(graph.neighbors(region)):
+				for geneus in special_genes:
+					if geneus in gene:
+						ss.add(geneus)
+			if len(ss) == i:
+				s.add(region)
+		model.addConstr(quicksum(node_variables_Region[u] for u in s) >= minimum_percentage_appearance * len(s))
 
 	# CONSTRAINTS
 	unique_TFs = set()
@@ -105,11 +123,11 @@ def generate_anat_model(graph, TFs_list, Regions_list, Properties_list, alpha, b
 		l = u.index("_")
 		unique_TFs.add(u[0:l])
 
-        # At most TF appears once
+        # At most TF appears twice
         for u in unique_TFs:
                 model.addConstr(quicksum(node_variables_TF[x] for x in TFs_list if u in x) <= max_duplicate_tfs)
 
-	# At most TF appears once
+	# At least TF appears once
 	for u in forced_nodes_full:
 		if len([node_variables_TF[x] for x in TFs_list if u in x]) == 0:
 			continue
@@ -145,9 +163,16 @@ def generate_anat_model(graph, TFs_list, Regions_list, Properties_list, alpha, b
 	# Beta constraint (Ie with TFs)
 	for node in Properties_list:
 		TF_neighbors = list(set(graph.neighbors(node)) & set(TFs_list))
-
+		unique_TFs_beta = defaultdict(int)
+		for u in TF_neighbors:
+			l = u.index("_")
+			unique_TFs_beta[u[0:l]] = min(max_duplicate_tfs, unique_TFs_beta[u[0:l]]+1)
+		summation = 0
+		for key,value in unique_TFs_beta.items():
+			summation += value
+		print summation, len(TF_neighbors)
 		model.addConstr(
-			quicksum(node_variables_TF[u] for u in TF_neighbors) >= min(len(TF_neighbors), beta)
+			quicksum(node_variables_TF[u] for u in TF_neighbors) >= min(summation, beta)
 		)
 
 	# Gamma constraint (Ie with Regions)
@@ -161,7 +186,7 @@ def generate_anat_model(graph, TFs_list, Regions_list, Properties_list, alpha, b
 	# Minimize total path weight
 	edges = [(u,v) for u in TFs_list for v in Regions_list if graph.has_edge(u,v)]
 	objective_expression = quicksum(node_variables_Region[u] for u in Regions_list) + quicksum(
-		edges_variables[u,v]*1/(1.0*(len(set(Regions_list) & set(graph.neighbors(u))))**alpha) for u, v in edges)
+		edges_variables[u,v] for u, v in edges)
 	model.setObjective(objective_expression, GRB.MINIMIZE)
 
 	return model, node_variables_TF, node_variables_Region

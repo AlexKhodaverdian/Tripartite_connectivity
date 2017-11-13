@@ -5,7 +5,7 @@ from os import sys
 sys.path.append("..")
 
 
-def generate_network():
+def generate_network(folder='graph_data'):
 	TFs = defaultdict(lambda: 1)
 	TFs_list = []
 	Regions_list = []
@@ -13,7 +13,7 @@ def generate_network():
 
 	network = nx.Graph()
 
-	file = open("graph_data/TF_list.txt", "r")
+	file = open(folder + "/TF_list.txt", "r")
 	for line in file:
 		updated_line = line.replace('\t', '_').strip('\n')
 		updated_line_fixed = updated_line + "_" + str(TFs[updated_line])
@@ -23,14 +23,14 @@ def generate_network():
 	for tf in TFs_list:
 		network.add_node(tf)
 
-	file = open("graph_data/Region_list.txt", "r")
+	file = open(folder + "/Region_list.txt", "r")
 	for line in file:
 		Regions_list.append(line.strip('\n'))
 
 	for region in Regions_list:
 		network.add_node(region)
 
-	file = open("graph_data/Property_list.txt", "r")
+	file = open(folder + "/Property_list.txt", "r")
 	for line in file:
 		fixed_line = "_".join(line.split()[1:])
 		Properties_list.append(fixed_line.strip('\n'))
@@ -38,7 +38,7 @@ def generate_network():
 	for property in Properties_list:
 		network.add_node(property)
 
-	file = open("graph_data/TFs_to_Properties.txt", "r")
+	file = open(folder + "/TFs_to_Properties.txt", "r")
 	i = 0
 	for line in file:
 		edges = line.split()
@@ -49,7 +49,7 @@ def generate_network():
 				network.add_edge(TFs_list[i], Properties_list[j])
 		i+=1
 
-	file = open("graph_data/Regions_to_TFs.txt", "r")
+	file = open(folder + "/Regions_to_TFs.txt", "r")
 	i = 0
 	for line in file:
 		edges = line.split()
@@ -58,7 +58,7 @@ def generate_network():
 				network.add_edge(TFs_list[j], Regions_list[i])
 		i += 1
 
-	file = open("graph_data/Regions_to_Properties.txt", "r")
+	file = open(folder + "/Regions_to_Properties.txt", "r")
 	i = 0
 	for line in file:
 		edges = line.split()

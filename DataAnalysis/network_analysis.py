@@ -7,13 +7,18 @@ from ILP_Solver.ILP_solver import *
 
 network, TFs_list, Regions_list, Properties_list = generate_network()
 
+network_full, TFs_list_full, Regions_list_full, Properties_list_full = generate_network(folder='graph_data_generalized')
 
-beta = 5
-gamma = 10
-theta = 20
-tau = 3
-alpha = .5
+extra_penalized_edges = list(set(network_full.edges()) - set(network.edges()))
+
+beta = 8
+gamma = 15
+theta = 30
+tau = 5
 max_duplicate_tfs = 2
+max_percentage_penalized_edges = .2
+minimum_percentage_appearance = .4
+
 forced_nodes_full = ['POU3F1',
 'POU3F2',
 'SOX2',
@@ -49,7 +54,22 @@ forced_nodes_full = ['POU3F1',
 'ZIC4',
 'ZIC5']
 
-model, node_variables_TF, node_variables_Region = generate_anat_model(network, TFs_list, Regions_list, Properties_list, alpha, beta, gamma, theta, tau, max_duplicate_tfs, forced_nodes_full)
+special_genes = [
+"LHX5",
+"MEIS2",
+"PAX6",
+"FOXB1",
+"SOX1",
+"IRX3",
+"OTX2",
+"ZIC2",
+"SP8",
+"POU3F1",
+"HOMEZ"
+]
+
+
+model, node_variables_TF, node_variables_Region = generate_anat_model(network, TFs_list, Regions_list, Properties_list, beta, gamma, theta, tau, max_duplicate_tfs , max_percentage_penalized_edges, minimum_percentage_appearance, forced_nodes_full, special_genes, extra_penalized_edges)
 node_variables_TF_result, node_variables_Region_result = solve_anat_instance(model, network, node_variables_TF, node_variables_Region,time_limit=300)
 
 file = open("Results/TFs_used.txt","w")
