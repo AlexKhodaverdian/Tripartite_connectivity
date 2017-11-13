@@ -9,6 +9,20 @@ network, TFs_list, Regions_list, Properties_list = generate_network()
 
 network_full, TFs_list_full, Regions_list_full, Properties_list_full = generate_network(folder='graph_data_generalized')
 
+
+
+"""
+	:param beta: Number of TFs a property must be connected with
+	:param gamma: Number of Regions a property must be connected with
+	:param theta: Number of TFs each Region must be connected to
+	:param tau: Number of Regions each TF must be connected to
+	:param max_duplicate_tfs: Maximum Number of duplicates of same TF allowed in solution
+	:param max_percentage_penalized_edges: Max percentage of penalized edges to allow in the solution
+	:param minimum_percentage_appearance: Min percentage of forced regions
+	:param forced_nodes_full: TFs to force to be used in the solution
+	:param special_genes 11 genes which we wanted to see Regions for
+	:param extra_penalized_edges: Edges which were not statistically significant
+"""
 extra_penalized_edges = list(set(network_full.edges()) - set(network.edges()))
 
 beta = 8

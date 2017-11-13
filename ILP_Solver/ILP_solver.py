@@ -67,6 +67,8 @@ def generate_anat_model(graph, TFs_list, Regions_list, Properties_list, beta, ga
 	:param max_percentage_penalized_edges: Max percentage of penalized edges to allow in the solution
 	:param minimum_percentage_appearance: Min percentage of forced regions
 	:param forced_nodes_full: TFs to force to be used in the solution
+	:param special_genes 11 genes which we wanted to see Regions for
+	:param extra_penalized_edges: Edges which were not statistically significant
 
 	:return: a Gurobi model pertaining to the Tripartite-connectivity instance, mappings from TFs to TF gurobi variables,
 			 and Regions to Region gurobi variables

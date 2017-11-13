@@ -1082,3 +1082,6 @@ Pool objective bound 2280
 
 Time limit reached
 Best objective 7.290000000000e+03, best bound 2.280000000000e+03, gap 68.7243%
+
+Gurobi 7.0.2 (mac64, Python) logging started Mon Nov 13 14:26:34 2017
+
